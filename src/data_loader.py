@@ -11,36 +11,6 @@ from datetime import datetime, timedelta
 
 ERCOT_HUBS = ["HB_NORTH", "HB_SOUTH", "HB_WEST", "HB_HOUSTON"]
 
-def load_ercot_real_data(filepath: str, hub: str = "HB_NORTH") -> pd.DataFrame:
-    """Load real ERCOT DAM SPP data from official yearly Excel file."""
-    xl = pd.ExcelFile(filepath)
-    
-    all_dfs = []
-    for sheet in xl.sheet_names:
-        df = xl.parse(sheet)
-        filtered = df[df["Settlement Point"] == hub].copy()
-        all_dfs.append(filtered)
-    
-    df = pd.concat(all_dfs, ignore_index=True)
-    
-    # Gestisci 24:00 → giorno dopo 00:00
-    df["Hour Ending"] = df["Hour Ending"].str.strip()
-    mask_24 = df["Hour Ending"] == "24:00"
-    df.loc[mask_24, "Hour Ending"] = "00:00"
-    
-    df["timestamp"] = pd.to_datetime(
-        df["Delivery Date"].astype(str) + " " + df["Hour Ending"],
-        format="%m/%d/%Y %H:%M"
-    )
-    df.loc[mask_24, "timestamp"] = df.loc[mask_24, "timestamp"] + pd.Timedelta(days=1)
-    df["timestamp"] = df["timestamp"] - pd.Timedelta(hours=1)
-    
-    df = df.set_index("timestamp").sort_index()
-    df = df[["Settlement Point Price"]].rename(
-        columns={"Settlement Point Price": "price"}
-    )
-    
-    return df 
 
 def load_ercot_dam_prices(
     start_date: str, end_date: str, hub: str = "HB_NORTH"
