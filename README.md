@@ -1,1 +1,146 @@
-# modo-bess-analyser 
+
+# BESS Arbitrage Analyser - ERCOT
+
+An interactive tool to evaluate battery energy storage (BESS) revenue from day-ahead energy arbitrage in the ERCOT market.
+
+Built as part of the **Modo Energy Challenge**.
+
+## Live Demo
+
+🔗 [Launch the app on Streamlit Cloud](https://your-app-url.streamlit.app)
+
+---
+
+## The Question
+
+> *"How much revenue can a battery storage asset earn from day-ahead energy arbitrage in ERCOT, and what drives that revenue?"*
+
+---
+
+## Key Results — ERCOT 2023, HB_NORTH, 1 MW / 2 MWh
+
+| Metric | Value |
+|--------|-------|
+| Total Revenue | **$81,356** |
+| Avg Daily Revenue | **$222/day** |
+| Revenue / MWh Capacity | **$40,678/MWh** |
+| Total Cycles | **814** |
+| Avg Price | **$49.2/MWh** |
+
+> Analysis period: 2023-01-01 → 2023-12-31 · Rolling day-ahead dispatch · 85% round-trip efficiency
+
+---
+
+## What the Tool Does
+
+The app answers three questions:
+
+**1. What does the price structure look like?**
+- Heatmap of median prices by hour and day of week
+- Price duration curve
+- Key statistics (mean, std, P5/P95, % negative, % above $100)
+
+**2. How does the battery dispatch?**
+- Optimal charge/discharge schedule via Linear Programming
+- State of charge trajectory
+- Average dispatch profile by hour of day
+
+**3. How much revenue does it generate?**
+- Cumulative revenue over the year
+- Monthly revenue breakdown
+- Annualised revenue estimate
+
+---
+
+## Methodology
+
+### Optimisation
+
+The dispatch is formulated as a **Linear Program** solved with [HiGHS](https://highs.dev/) via `scipy.optimize.linprog`:
+
+```
+maximise  Σ price[t] × (discharge[t] - charge[t]) × Δt
+
+subject to:
+  e[t] = e[t-1] + η_c × charge[t] - (1/η_d) × discharge[t]   (SoC dynamics)
+  0 ≤ charge[t], discharge[t] ≤ P_max                          (power limits)
+  E_min ≤ e[t] ≤ E_max                                         (SoC bounds)
+```
+
+### Two dispatch modes
+
+| Mode | Description | Use case |
+|------|-------------|----------|
+| **Rolling day-ahead** | Optimises 24h at a time, SoC carries over | Realistic simulation |
+| **Perfect foresight** | Optimises full period at once | Theoretical upper bound |
+
+The gap between the two represents the **value of perfect price forecasting**.
+
+### Data
+
+- **Real data**: ERCOT DAM Settlement Point Prices (NP4-180-ER) for 2023
+- **Synthetic data**: Calibrated on ERCOT 2024 statistics — mean $35/MWh, seasonal summer peak ×1.4, 3% spike probability
+
+---
+
+## Battery Parameters
+
+| Parameter | Default | Range |
+|-----------|---------|-------|
+| Power | 1 MW | 0.5 – 10 MW |
+| Duration | 2 hours | 1 – 8 hours |
+| Round-trip efficiency | 85% | 70 – 97% |
+| Min SoC | 10% | 0 – 30% |
+| Max SoC | 90% | 70 – 100% |
+
+---
+
+## Project Structure
+
+```
+modo-bess-analyser/
+├── app.py                  # Streamlit dashboard
+├── src/
+│   ├── data_loader.py      # ERCOT data loading (real + synthetic)
+│   ├── optimizer.py        # LP dispatch optimisation
+│   └── viz.py              # Plotly visualisations
+├── data/
+│   └── rpt.00013060...xlsx # ERCOT 2023 DAM prices
+└── requirements.txt
+```
+
+---
+
+## Installation
+
+```bash
+git clone https://github.com/your-username/modo-bess-analyser
+cd modo-bess-analyser
+conda create -n modo python=3.11
+conda activate modo
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+---
+
+## Limitations & Extensions
+
+This tool models **energy-only arbitrage** — the conservative floor of BESS revenue. Real assets stack additional revenues:
+
+- **Ancillary services** (ECRS, Reg-Up/Down, Non-Spin) — typically 30–60% additional revenue in ERCOT
+- **Capacity markets** — not applicable in ERCOT
+- **Degradation costs** — not modelled (reduces net revenue ~5–10%)
+
+Natural extensions would include:
+- Multi-service co-optimisation (energy + ancillary)
+- Price forecasting to replace perfect foresight
+- Hub comparison across HB_NORTH, HB_WEST, HB_SOUTH, HB_HOUSTON
+- Sensitivity analysis on battery duration and efficiency
+
+---
+
+## Author
+
+**Riccardo Morandi**
+MSc Sustainable Energy Systems — Technical University of Denmark (DTU)

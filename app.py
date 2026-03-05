@@ -193,8 +193,8 @@ if st.session_state.results:
     st.divider()
 
     # ── Tabs ─────────────────────────────────
-    tab1, tab2, tab3 = st.tabs(
-        ["📊  Market Overview", "⚡  Dispatch & SoC", "💰  Revenue Analysis"]
+    tab1, tab2, tab3, tab4 = st.tabs(
+        ["📊  Market Overview", "⚡  Dispatch & SoC", "💰  Revenue Analysis", "💼  Financial Analysis"]
     )
 
     with tab1:
@@ -277,7 +277,121 @@ if st.session_state.results:
         if stats["n_days"] >= 28:
             st.plotly_chart(
                 monthly_revenue_bar(dispatch_df), use_container_width=True
+            ) 
+    with tab4:
+        st.markdown("### Project Financial Analysis")
+        st.markdown("Evaluate whether the BESS project is worth building.")
+
+        st.divider()
+
+        # ── Inputs ──────────────────────────────────────
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            capex_per_kwh = st.number_input(
+                "CAPEX ($/kWh)", min_value=50, max_value=1000,
+                value=300, step=10,
+                help="Typical range: $200-400/kWh for utility-scale BESS in 2024"
             )
+            project_life = st.number_input(
+                "Project life (years)", min_value=5, max_value=30,
+                value=15, step=1
+            )
+        with col2:
+            wacc = st.number_input(
+                "WACC (%)", min_value=1.0, max_value=20.0,
+                value=8.0, step=0.5,
+                help="Weighted Average Cost of Capital"
+            ) / 100
+            opex_pct = st.number_input(
+                "Annual O&M (% of CAPEX)", min_value=0.5, max_value=5.0,
+                value=1.0, step=0.1
+            ) / 100
+        with col3:
+            degradation = st.number_input(
+                "Annual degradation (%)", min_value=0.0, max_value=5.0,
+                value=2.0, step=0.1,
+                help="Capacity loss per year"
+            ) / 100
+            revenue_growth = st.number_input(
+                "Revenue growth (%/year)", min_value=-10.0, max_value=10.0,
+                value=0.0, step=0.5,
+                help="Expected annual change in arbitrage revenue"
+            ) / 100
+
+        st.divider()
+
+        # ── Compute ──────────────────────────────────────
+        from src.financial import compute_lcos
+
+        fin = compute_lcos(
+            capex_per_kwh=capex_per_kwh,
+            power_mw=battery.power_mw,
+            capacity_mwh=battery.capacity_mwh,
+            annual_revenue=stats["avg_daily_revenue_usd"] * 365,
+            project_life_years=project_life,
+            wacc=wacc,
+            opex_pct_capex=opex_pct,
+            degradation_pct_year=degradation,
+            annual_cycles=stats["avg_daily_cycles"] * 365,
+        )
+
+        # ── KPIs ─────────────────────────────────────────
+        f1, f2, f3, f4 = st.columns(4)
+        f1.metric("Total CAPEX", f"${fin['capex_total']:,.0f}")
+        f2.metric("Annual O&M", f"${fin['opex_annual']:,.0f}")
+        f3.metric(
+            "Payback Period",
+            f"{fin['payback_years']:.1f} years" if fin['payback_years'] else "Never",
+        )
+        f4.metric("LCOS", f"${fin['lcos']:.1f}/MWh")
+
+        st.divider()
+
+        # ── Cash flow chart ───────────────────────────────
+        import plotly.graph_objects as go
+
+        cf = fin["cf_table"]
+        fig_cf = go.Figure()
+        fig_cf.add_trace(go.Bar(
+            x=cf["Year"], y=cf["Net CF ($)"],
+            name="Annual Net CF",
+            marker_color="#4A9EFF"
+        ))
+        fig_cf.add_trace(go.Scatter(
+            x=cf["Year"], y=cf["Cumulative CF ($)"],
+            name="Cumulative CF",
+            line=dict(color="#FF6B35", width=2),
+            yaxis="y2"
+        ))
+        fig_cf.add_hline(y=0, line_dash="dash", line_color="#8892A0")
+        fig_cf.update_layout(
+            title="Annual & Cumulative Cash Flow",
+            xaxis_title="Year",
+            yaxis_title="Annual Net CF ($)",
+            yaxis2=dict(title="Cumulative CF ($)", overlaying="y", side="right"),
+            paper_bgcolor="#0D1117",
+            plot_bgcolor="#0F1423",
+            font=dict(color="#C8D0E0"),
+            legend=dict(x=0.01, y=0.99),
+            height=400,
+        )
+        st.plotly_chart(fig_cf, use_container_width=True)
+
+        # ── LCOS context ──────────────────────────────────
+        avg_price = price_stats["mean"]
+        spread = price_stats["p95"] - price_stats["p5"]
+        st.info(
+            f"""
+            📌 **LCOS Interpretation**
+
+            Your LCOS is **${fin['lcos']:.1f}/MWh** — this is the minimum average 
+            price spread needed to break even over the project life.
+
+            Current avg price spread (P95-P5): **${spread:.1f}/MWh**
+
+            → The project is **{'viable ✅' if spread > fin['lcos'] else 'not viable at current spreads ❌'}**
+            """,
+        )        
 
         # Summary table
         st.markdown("### Summary")
