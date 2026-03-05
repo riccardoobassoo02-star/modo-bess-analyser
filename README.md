@@ -1,9 +1,10 @@
+# ⚡ BESS Arbitrage Analyser · ERCOT
 
-# BESS Arbitrage Analyser - ERCOT
+An interactive tool to evaluate battery energy storage (BESS) revenue from day-ahead energy arbitrage in the ERCOT market, including full project financial analysis.
 
-An interactive tool to evaluate battery energy storage (BESS) revenue from day-ahead energy arbitrage in the ERCOT market.
+Built as part of the **Modo Energy Take-Home Task**.
 
-Built as part of the **Modo Energy Challenge**.
+---
 
 ## Live Demo
 
@@ -19,6 +20,7 @@ Built as part of the **Modo Energy Challenge**.
 
 ## Key Results — ERCOT 2023, HB_NORTH, 1 MW / 2 MWh
 
+### Revenue
 | Metric | Value |
 |--------|-------|
 | Total Revenue | **$81,356** |
@@ -27,28 +29,43 @@ Built as part of the **Modo Energy Challenge**.
 | Total Cycles | **814** |
 | Avg Price | **$49.2/MWh** |
 
-> Analysis period: 2023-01-01 → 2023-12-31 · Rolling day-ahead dispatch · 85% round-trip efficiency
+> Rolling day-ahead dispatch · 85% round-trip efficiency · 2023-01-01 → 2023-12-31
+
+### Project Financials
+| Metric | Value |
+|--------|-------|
+| Total CAPEX | **$600,000** |
+| Annual O&M | **$6,000/year** |
+| Payback Period | **8.7 years** |
+| LCOS | **$52.3/MWh** |
+
+> CAPEX: $300/kWh · WACC: 8% · Project life: 15 years · Annual degradation: 2%
 
 ---
 
 ## What the Tool Does
 
-The app answers three questions:
+The app answers four questions:
 
-**1. What does the price structure look like?**
+**1. 📊 What does the price structure look like?**
 - Heatmap of median prices by hour and day of week
 - Price duration curve
 - Key statistics (mean, std, P5/P95, % negative, % above $100)
 
-**2. How does the battery dispatch?**
+**2. ⚡ How does the battery dispatch?**
 - Optimal charge/discharge schedule via Linear Programming
 - State of charge trajectory
 - Average dispatch profile by hour of day
 
-**3. How much revenue does it generate?**
+**3. 💰 How much revenue does it generate?**
 - Cumulative revenue over the year
 - Monthly revenue breakdown
 - Annualised revenue estimate
+
+**4. 💼 Is the project financially viable?**
+- LCOS vs market price spread
+- Payback period
+- Annual and cumulative cash flow chart
 
 ---
 
@@ -76,10 +93,20 @@ subject to:
 
 The gap between the two represents the **value of perfect price forecasting**.
 
+### LCOS
+
+The Levelized Cost of Storage is computed as:
+
+```
+LCOS = (CAPEX + NPV of OPEX) / NPV of total discharged energy
+```
+
+It represents the minimum price spread required to break even over the project life — the key metric for investment decisions.
+
 ### Data
 
 - **Real data**: ERCOT DAM Settlement Point Prices (NP4-180-ER) for 2023
-- **Synthetic data**: Calibrated on ERCOT 2024 statistics — mean $35/MWh, seasonal summer peak ×1.4, 3% spike probability
+- **Synthetic data**: Calibrated on ERCOT statistics — mean $35/MWh, seasonal summer peak ×1.4, 3% spike probability
 
 ---
 
@@ -103,6 +130,7 @@ modo-bess-analyser/
 ├── src/
 │   ├── data_loader.py      # ERCOT data loading (real + synthetic)
 │   ├── optimizer.py        # LP dispatch optimisation
+│   ├── financial.py        # LCOS and payback analysis
 │   └── viz.py              # Plotly visualisations
 ├── data/
 │   └── rpt.00013060...xlsx # ERCOT 2023 DAM prices
@@ -129,18 +157,18 @@ streamlit run app.py
 This tool models **energy-only arbitrage** — the conservative floor of BESS revenue. Real assets stack additional revenues:
 
 - **Ancillary services** (ECRS, Reg-Up/Down, Non-Spin) — typically 30–60% additional revenue in ERCOT
-- **Capacity markets** — not applicable in ERCOT
-- **Degradation costs** — not modelled (reduces net revenue ~5–10%)
+- **Degradation costs** — modelled as 2% annual capacity loss
+- **Financing structure** — simplified single WACC; real projects use debt/equity split
 
-Natural extensions would include:
+Natural extensions:
 - Multi-service co-optimisation (energy + ancillary)
 - Price forecasting to replace perfect foresight
 - Hub comparison across HB_NORTH, HB_WEST, HB_SOUTH, HB_HOUSTON
-- Sensitivity analysis on battery duration and efficiency
+- Sensitivity analysis on CAPEX and duration
 
 ---
 
 ## Author
 
-**Riccardo Morandi**
+**Riccardo Basso**
 MSc Sustainable Energy Systems — Technical University of Denmark (DTU)
