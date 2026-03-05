@@ -8,9 +8,20 @@ Built as part of the **Modo Energy Take-Home Task**.
 
 ## Live Demo
 
-🔗 [Launch the app on Streamlit Cloud](https://your-app-url.streamlit.app)
+🔗 [Launch the app on Streamlit Cloud](https://modo-bess-analyser-dmjdaj86xxkusbdceehprv.streamlit.app/)
 
 ---
+
+## Why This Project
+
+BESS arbitrage sits at the intersection of energy markets, optimization, and project finance — exactly the problems Modo works on, and the areas I want to go deeper into. I wanted to build something that answers a real commercial question: *"Is this battery worth building?"*
+
+I scoped it to three layers:
+1. **Market analysis** — understand the price structure that drives revenue
+2. **Dispatch optimisation** — LP model to find the optimal charge/discharge strategy
+3. **Financial analysis** — LCOS and payback to translate revenue into investment decisions
+
+This mirrors how a real analyst would approach a BESS opportunity. 
 
 ## The Question
 
@@ -167,6 +178,15 @@ Natural extensions:
 - Sensitivity analysis on CAPEX and duration
 
 ---
+
+## How I Used AI
+
+I used Claude (Anthropic) throughout this project:
+- **Code generation** — scaffolding the LP formulation, Streamlit layout, Plotly charts
+- **Debugging** — fixing scipy/pandas issues, Plotly layout conflicts
+- **Learning** — understanding ERCOT market structure, LP duality, LCOS methodology
+
+The workflow was iterative: I'd define what I wanted, Claude would generate a first version, I'd test it, identify issues, and refine. The key skill was knowing *what* to ask for and *whether the output made sense* — not just accepting generated code blindly.
 
 ## Author
 
