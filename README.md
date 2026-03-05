@@ -2,7 +2,7 @@
 
 An interactive tool to evaluate battery energy storage (BESS) revenue from day-ahead energy arbitrage in the ERCOT market, including full project financial analysis.
 
-Built as part of the **Modo Energy Take-Home Task**.
+Built as part of the **Modo Energy Open tech Challenge**.
 
 ---
 
