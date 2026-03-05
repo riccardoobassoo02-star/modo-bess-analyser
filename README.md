@@ -14,7 +14,7 @@ Built as part of the **Modo Energy Open Tech Challenge**.
 
 ## Why This Project
 
-BESS arbitrage sits at the intersection of energy markets, optimization, and project finance — exactly the problems Modo works on, and the areas I want to go deeper into. I wanted to build something that answers a real commercial question: *"Is this battery worth building?"*
+BESS arbitrage sits at the intersection of energy markets, optimization, and project finance — exactly the problems Modo works on, and the areas I want to go deeper into. I wanted to build something that answers a simple question, but in fact the most fundamental one: *"Is this battery worth building?"*
 
 I scoped it to three layers:
 1. **Market analysis** — understand the price structure that drives revenue
