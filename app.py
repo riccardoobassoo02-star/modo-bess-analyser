@@ -63,6 +63,11 @@ with st.sidebar:
     st.divider()
 
     st.markdown('<div class="sidebar-section">Market Settings</div>', unsafe_allow_html=True)
+    data_source = st.radio(
+    "Data Source",
+    ["Synthetic", "Real ERCOT 2023"],
+    index=0,
+    )
     hub = st.selectbox("ERCOT Hub", ERCOT_HUBS, index=0)
     col1, col2 = st.columns(2)
     with col1:
@@ -125,12 +130,21 @@ if run_btn or st.session_state.results is None:
 
     with st.spinner("Loading ERCOT prices…"):
         try:
-            prices = load_ercot_dam_prices(
-                str(start_date), str(end_date), hub=hub
-            )
+            if data_source == "Real ERCOT 2023":
+                from src.data_loader import load_ercot_real_data
+                prices = load_ercot_real_data(
+                    "data/rpt.00013060.0000000000000000.DAMLZHBSPP_2023.xlsx",
+                    hub=hub
+                )
+                prices = prices.loc[str(start_date):str(end_date)]
+                prices["hub"] = hub
+            else:
+                prices = load_ercot_dam_prices(
+                    str(start_date), str(end_date), hub=hub
+                ) 
         except Exception as e:
-            st.error(f"Data load failed: {e}")
-            st.stop()
+            st.error(f"Dat load failed: {e}")
+            st.stop() 
 
     with st.spinner("Optimising dispatch…"):
         try:
