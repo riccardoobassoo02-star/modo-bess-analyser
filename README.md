@@ -1,4 +1,4 @@
-# ⚡ BESS Arbitrage Analyser · ERCOT
+# ⚡🔋 BESS Arbitrage Analyser · ERCOT
 
 An interactive tool to evaluate battery energy storage (BESS) revenue from day-ahead energy arbitrage in the ERCOT market, including full project financial analysis.
 
