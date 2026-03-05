@@ -30,6 +30,8 @@ This mirrors how a real analyst would approach a BESS opportunity.
 ---
 
 ## Key Results — ERCOT 2023, HB_NORTH, 1 MW / 2 MWh
+You may ask yourself "why specifically 2023?". That year marked an important page in the history of BESS: the ERCOT market experienced extreme volatility driven by record-breaking heatwaves and an all-time high demand, which frequently pushed energy prices toward the $5,000/MWh cap. In this occasion, batteries proved to be not only a critical infrastructure for grid resiliency, but also an economically viable and profitable asset.
+
 
 ### Revenue
 | Metric | Value |
