@@ -164,26 +164,31 @@ def summarize_prices(df: pd.DataFrame) -> dict:
         "n_hours": len(p),
     } 
 def load_ercot_real_data(filepath: str, hub: str = "HB_NORTH") -> pd.DataFrame:
-    """Load real ERCOT DAM SPP data from the official yearly Excel file."""
+    """Load real ERCOT DAM SPP data from official yearly Excel file."""
     xl = pd.ExcelFile(filepath)
-    all_dfs = []
     
+    all_dfs = []
     for sheet in xl.sheet_names:
         df = xl.parse(sheet)
-        all_dfs.append(df)
+        filtered = df[df["Settlement Point"] == hub].copy()
+        all_dfs.append(filtered)
     
     df = pd.concat(all_dfs, ignore_index=True)
     
-    # Filtra hub
-    df = df[df["Settlement Point"] == hub].copy()
+    # Gestisci 24:00 → converti manualmente senza pd.to_datetime diretto
+    df["Hour Ending"] = df["Hour Ending"].astype(str).str.strip()
     
-    # Crea timestamp
-    df["timestamp"] = pd.to_datetime(
-        df["Delivery Date"].astype(str) + " " + df["Hour Ending"],
-        format="%m/%d/%Y %H:%M"
-    )
-    df["timestamp"] = df["timestamp"] - pd.Timedelta(hours=1)
+    def parse_ercot_timestamp(row):
+        date_str = str(row["Delivery Date"]).strip()
+        hour_str = row["Hour Ending"]
+        if hour_str == "24:00":
+            # mezzanotte del giorno dopo
+            dt = pd.to_datetime(date_str, format="%m/%d/%Y") + pd.Timedelta(days=1)
+        else:
+            dt = pd.to_datetime(date_str + " " + hour_str, format="%m/%d/%Y %H:%M")
+        return dt - pd.Timedelta(hours=1)  # Hour Ending → Hour Beginning
     
+    df["timestamp"] = df.apply(parse_ercot_timestamp, axis=1)
     df = df.set_index("timestamp").sort_index()
     df = df[["Settlement Point Price"]].rename(
         columns={"Settlement Point Price": "price"}
