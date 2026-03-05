@@ -175,7 +175,6 @@ def load_ercot_real_data(filepath: str, hub: str = "HB_NORTH") -> pd.DataFrame:
     
     df = pd.concat(all_dfs, ignore_index=True)
     
-    # Gestisci 24:00 → converti manualmente senza pd.to_datetime diretto
     df["Hour Ending"] = df["Hour Ending"].astype(str).str.strip()
     
     def parse_ercot_timestamp(row):

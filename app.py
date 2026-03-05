@@ -71,9 +71,9 @@ with st.sidebar:
     hub = st.selectbox("ERCOT Hub", ERCOT_HUBS, index=0)
     col1, col2 = st.columns(2)
     with col1:
-        start_date = st.date_input("Start", value=pd.Timestamp("2024-01-01"))
+        start_date = st.date_input("Start", value=pd.Timestamp("2023-01-01"))
     with col2:
-        end_date = st.date_input("End", value=pd.Timestamp("2024-12-31"))
+        end_date = st.date_input("End", value=pd.Timestamp("2023-12-31"))
 
     st.markdown('<div class="sidebar-section">Battery Specifications</div>', unsafe_allow_html=True)
     power_mw = st.slider("Power (MW)", 0.5, 10.0, 1.0, 0.5)
