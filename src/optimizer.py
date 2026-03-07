@@ -136,7 +136,10 @@ def optimise_dispatch(
     b_eq = np.zeros(T)
 
     # e[0] = e_init
-    A_eq[0, 2 * T + 0] = 1.0
+    # e[0] = e_init + eta_c * c[0] - (1/eta_d) * d[0]
+    A_eq[0, 2 * T] = 1.0
+    A_eq[0, 0] = -battery.eta_c * dt
+    A_eq[0, T] = dt / battery.eta_d
     b_eq[0] = battery.e_init
 
     for t in range(1, T):
