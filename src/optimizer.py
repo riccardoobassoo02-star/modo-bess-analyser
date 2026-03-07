@@ -37,7 +37,7 @@ class BatteryParams:
     efficiency_rt: float = 0.85    # round-trip efficiency [fraction]
     soc_min_pct: float = 0.10      # minimum SoC as fraction of capacity
     soc_max_pct: float = 0.90      # maximum SoC as fraction of capacity
-    soc_init_pct: float = 0.50     # initial SoC as fraction of capacity
+    soc_init_pct: float = 0.0     # initial SoC as fraction of capacity
     degradation_per_cycle: float = 0.0  # optional: $/cycle cost (set 0 to ignore)
 
     @property
