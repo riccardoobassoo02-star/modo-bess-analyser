@@ -135,6 +135,24 @@ It represents the minimum price spread required to break even over the project l
 
 ---
 
+### SoC Management 
+**Upadate**
+Rather than assuming the battery starts at 50% SoC ,the 
+model initialises with an empty battery (`SoC_init = 0%`). The optimiser 
+then decides when and how to charge from zero, reflecting the true 
+opportunity cost from the first hour of operation. 
+To model it, the battery is subject to a **soft floor constraint** at 20% of capacity.
+
+Rather than a hard limit, the floor is modelled as an **opportunity cost penalty** in the objective function:
+```
+minimise  -Σ price[t] × (d[t] - c[t]) × Δt   ← arbitrage revenue
+          + λ × Σ s[t]                          ← soft floor penalty (λ = $10/MWh)
+```
+
+where `s[t] ≥ max(0, e_soft - e[t])` captures how far the SoC drops below the floor.
+
+**Reported revenue is pure arbitrage only** — the penalty term guides dispatch decisions but is excluded from all financial KPIs. This mirrors real-world practice where internal battery management costs are not reported as part of trading P&L.
+
 ## Project Structure
 
 ```
