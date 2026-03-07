@@ -1,6 +1,6 @@
-# ⚡🔋 BESS Arbitrage Analyser · ERCOT
+# ⚡🔋 BESS Arbitrage Analyser - ERCOT
 
-An interactive tool to evaluate battery energy storage (BESS) revenue from day-ahead energy arbitrage in the ERCOT market, including full project financial analysis.
+An interactive simplified tool to evaluate BESS revenue from day-ahead energy arbitrage in the ERCOT market, including full project financial analysis.
 
 Built as part of the **Modo Energy Open Tech Challenge**.
 
@@ -58,7 +58,7 @@ You may ask yourself "why specifically 2023?". That year marked an important pag
 
 ## What the Tool Does
 
-The app answers four questions:
+The app answers four subquestions:
 
 **1. 📊 What does the price structure look like?**
 - Heatmap of median prices by hour and day of week
@@ -183,12 +183,12 @@ Natural extensions:
 
 ## How I Used AI
 
-I used Claude (Anthropic) throughout this project:
+I used Claude throughout this project:
 - **Code generation** — scaffolding the LP formulation, Streamlit layout, Plotly charts
 - **Debugging** — fixing scipy/pandas issues, Plotly layout conflicts
 - **Learning** — understanding ERCOT market structure, LP duality, LCOS methodology
 
-The workflow was iterative: I'd define what I wanted, Claude would generate a first version, I'd test it, identify issues, and refine. The key skill was knowing *what* to ask for and *whether the output made sense* — not just accepting generated code blindly.
+The workflow was iterative: I'd define what I wanted, Claude would help me to co-generate a first version, I'd test it, identify issues, and refine. The key skill was knowing *what* to ask for and *whether the output made sense* — not just accepting generated code blindly.
 
 ## Author
 
