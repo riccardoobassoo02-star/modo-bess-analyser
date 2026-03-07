@@ -126,9 +126,6 @@ if run_btn or st.session_state.results is None:
     efficiency_rt=rt_efficiency,
     soc_min_pct=soc_min,
     soc_max_pct=soc_max,
-    soc_init_pct=0.0,
-    soc_soft_floor_pct=0.20,
-    soft_penalty=10.0,
 )
 
     with st.spinner("Loading ERCOT prices…"):
