@@ -82,7 +82,7 @@ with st.sidebar:
     st.caption(f"Capacity: **{capacity_mwh:.1f} MWh**")
 
     rt_efficiency = st.slider("Round-trip efficiency (%)", 70, 97, 85, 1) / 100
-    soc_min = st.slider("Min SoC (%)", 0, 30, 10, 5) / 100
+    soc_min = st.slider("Min SoC (%)", 0, 30, 0, 5) / 100
     soc_max = st.slider("Max SoC (%)", 70, 100, 90, 5) / 100
 
     st.markdown('<div class="sidebar-section">Analysis Mode</div>', unsafe_allow_html=True)
@@ -121,12 +121,15 @@ if "results" not in st.session_state:
 # ─────────────────────────────────────────────
 if run_btn or st.session_state.results is None:
     battery = BatteryParams(
-        power_mw=power_mw,
-        capacity_mwh=capacity_mwh,
-        efficiency_rt=rt_efficiency,
-        soc_min_pct=soc_min,
-        soc_max_pct=soc_max,
-    )
+    power_mw=power_mw,
+    capacity_mwh=capacity_mwh,
+    efficiency_rt=rt_efficiency,
+    soc_min_pct=soc_min,
+    soc_max_pct=soc_max,
+    soc_init_pct=0.0,
+    soc_soft_floor_pct=0.20,
+    soft_penalty=10.0,
+)
 
     with st.spinner("Loading ERCOT prices…"):
         try:
