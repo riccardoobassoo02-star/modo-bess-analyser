@@ -101,9 +101,9 @@ def price_duration_curve(prices: pd.Series) -> go.Figure:
     xaxis_title="% of Hours",
     yaxis_title="Price ($/MWh)",
     **_base_layout(height=380),
-    xaxis=dict(range=[0, 100], autorange=False),
-    yaxis=dict(range=[0, 300], autorange=False)
-    )  
+    )
+    fig.update_xaxes(range=[0, 100], autorange=False)
+    fig.update_yaxes(range=[0, 300], autorange=False)  
     fig.add_annotation(
         x=2, y=280,
         text=f"{(prices > 300).mean() * 100:.1f}% of hours exceed $300/MWh",
