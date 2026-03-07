@@ -41,14 +41,16 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap');
-    html, body, [class*="css"] { font-family: 'IBM Plex Mono', monospace; }
+    @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+    html, body, [class*="css"] { font-family: 'Space Grotesk', sans-serif; }
+    h1, h2, h3 { font-family: 'Syne', sans-serif !important; font-weight: 700; }
     .metric-label { font-size: 0.78rem; color: #8892A0; text-transform: uppercase; letter-spacing: 0.08em; }
     .metric-value { font-size: 1.6rem; font-weight: 600; color: #E0E8FF; }
-    .stMetric label { font-family: 'IBM Plex Mono', monospace !important; }
-    div[data-testid="stMetricValue"] { font-family: 'IBM Plex Mono', monospace; font-size: 1.5rem; }
-    .sidebar-section { color: #8892A0; font-size: 0.75rem; text-transform: uppercase;
-                       letter-spacing: 0.1em; margin-top: 1rem; margin-bottom: 0.3rem; }
+    .stMetric label { font-family: 'Space Grotesk', sans-serif !important; font-weight: 500; }
+    div[data-testid="stMetricValue"] { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 700; }
+    .sidebar-section { color: #8892A0; font-size: 0.72rem; text-transform: uppercase;
+                       letter-spacing: 0.12em; margin-top: 1rem; margin-bottom: 0.3rem;
+                       font-family: 'Space Grotesk', sans-serif; font-weight: 600; }
     </style>
     """,
     unsafe_allow_html=True,
