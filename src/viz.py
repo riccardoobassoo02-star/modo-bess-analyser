@@ -101,7 +101,7 @@ def price_duration_curve(prices: pd.Series) -> go.Figure:
         xaxis_title="% of Hours",
         yaxis_title="Price ($/MWh)",
         **_base_layout(height=380),
-        yaxis_range=[-50, 300]
+        yaxis_range=[0, 300]
     )  
     fig.add_annotation(
         x=2, y=280,

@@ -241,7 +241,7 @@ if st.session_state.results:
                 The **price spread** (P95 − P5) is the theoretical maximum 
                 daily arbitrage value. A real BESS captures a fraction of this,
                 constrained by capacity and round-trip losses.
-                Negative prices and scarcity spikes both boost revenue —
+                Negative prices and scarcity spikes both boost revenue and
                 ERCOT's market design creates both regularly.
                 """
             )
