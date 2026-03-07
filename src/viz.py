@@ -102,7 +102,13 @@ def price_duration_curve(prices: pd.Series) -> go.Figure:
         yaxis_title="Price ($/MWh)",
         **_base_layout(height=380),
     ) 
-    
+    fig.update_yaxes(range=[-50, 300]) 
+    fig.add_annotation(
+        x=2, y=280,
+        text=f"{(prices > 300).mean() * 100:.1f}% of hours exceed $300/MWh",
+        showarrow=False,
+        font=dict(color="#8892A0", size=11),
+    )
     return fig
 
 
@@ -269,6 +275,7 @@ def hourly_avg_dispatch(dispatch_df: pd.DataFrame) -> go.Figure:
         title="Average Dispatch Profile by Hour of Day",
         yaxis_title="Power (MW)",
         **_base_layout(height=350),
-    )
+    ) 
     fig.update_xaxes(title="Hour", tickmode="linear", tick0=0, dtick=2)
-    return fig
+    return fig 
+   
