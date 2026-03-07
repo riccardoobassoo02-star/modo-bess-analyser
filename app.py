@@ -65,7 +65,7 @@ with st.sidebar:
     st.markdown('<div class="sidebar-section">Market Settings</div>', unsafe_allow_html=True)
     data_source = st.radio(
     "Data Source",
-    ["Synthetic", "Real ERCOT 2023"],
+    ["Real ERCOT 2023", "Synthetic"],
     index=0,
     )
     hub = st.selectbox("ERCOT Hub", ERCOT_HUBS, index=0)
