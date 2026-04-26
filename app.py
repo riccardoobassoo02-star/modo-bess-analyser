@@ -6,7 +6,7 @@ Answers the question:
     "How much revenue can a battery storage asset earn from
      day-ahead energy arbitrage in ERCOT, and what drives that revenue?"
 
-Author: Riccardo Morandi
+Author: Riccardo Basso
 """
 
 import streamlit as st
